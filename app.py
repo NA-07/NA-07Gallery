@@ -1,8 +1,5 @@
 import streamlit as st
 import sqlite3
-from fastapi import FastAPI, Form
-from fastapi.responses import HTMLResponse
-from fastapi.middleware.wsgi import WSGIMiddleware
 
 # Function to create a database connection
 def create_connection():
@@ -38,7 +35,7 @@ def insert_data(first_name, last_name, email, comments):
 
 # Streamlit app
 def main():
-    st.title("Contact Us from NA-07Gallery(7th Batch)")
+    st.title("Contact Us Via NA-07 GALLERY(7th Batch)")
     st.write("Have Queries? Send us a message now!")
 
     with st.form(key='contact_form'):
@@ -61,24 +58,3 @@ def main():
 if __name__ == "__main__":
     create_table()
     main()
-
-# FastAPI app
-app = FastAPI()
-
-@app.get("/", response_class=HTMLResponse)
-async def read_form():
-    with open("contact.html", "r") as file:
-        return HTMLResponse(content=file.read(), status_code=200)
-
-@app.post("/submit")
-async def handle_form_submission(
-    first_name: str = Form(...),
-    last_name: str = Form(...),
-    email: str = Form(...),
-    comments: str = Form(...)
-):
-    insert_data(first_name, last_name, email, comments)
-    return {"message": "Form submitted successfully"}
-
-# Integrate FastAPI with Streamlit
-app.mount("/streamlit", WSGIMiddleware(main))
